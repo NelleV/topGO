@@ -94,15 +94,18 @@ buildGOgraph.topology <- function(knownNodes, whichOnto = "BP") {
     setNodeInDAG(node)    # we visit the node
     assign(node, new.env(hash = T, parent = emptyenv()), envir = edgeEnv) # adj list
   
-    if(node == GENE.ONTO.ROOT) 
-      return(2)
-
     adjNodes <- adjLookUP[[node]]
-
-    ## debuging point! should not happen!
-    if(length(adjNodes) == 0)
-      message('\n There are no adj nodes for node: ', node)
-          
+    if(length(GENE.ONTO.ROOT) != 0){
+      if(node == GENE.ONTO.ROOT){
+        return(2)
+      }
+    }else{
+      if(is.na(adjNodes)){
+        # If there's no parents, then there's no adjacent node.
+        return(2)
+      }
+    }
+         
     for(i in 1:length(adjNodes)) {
       x <- as.character(adjNodes[i])
       envAddEdge(node, x, names(adjNodes[i]))
